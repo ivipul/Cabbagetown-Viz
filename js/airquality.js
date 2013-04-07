@@ -45,6 +45,36 @@ $(document).ready(function(){
     	}
 	});
 	
+	
+	
+	$('.numeric-value').each( function()
+		{
+    	var $this = $( this ),
+        classToAdd = null;
+
+    	switch( true )
+    	{
+        	case ( $this.text() ) <= 30:
+            classToAdd = 'green-value';
+            break;
+
+        	case ( $this.text() ) > 30:
+            classToAdd = 'red-value';
+            break;
+
+    	}
+
+    	if( classToAdd !== null )
+    	{
+        $this.addClass( classToAdd );
+    	}
+	});
+		
+	
+	
+	
+	
+	
 	/*code for the 2nd part of the page starts*/
 	var currLocation = 'Community Center';
 	var currDuration = 'day';
