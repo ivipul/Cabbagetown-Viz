@@ -290,15 +290,26 @@ html {
 
 
 /*VIZ CSS*/
-
-.blue {
-    background-color: #00f;
+ 
+ .green{
+ background-color: #82D694;
+    font-family:sans-serif, arial, helvetica;
     color: #fff;
+    
 	}
 
 	.red {
-    background-color: #f00;
-    color: #000;
+    background-color: #FC858D;
+    font-family:sans-serif, arial, helvetica;
+    color: #666666;
+	}
+	
+	.green-value {
+color: #82D694;
+	}
+
+	.red-value {
+	color: #FC858D;
 	}
 	.tooltip
 	{
@@ -307,27 +318,65 @@ html {
 	display:block; 
 	border-radius:20px; 
 	text-align:center;
-	opacity: 1;
+	vertical-align:middle;
+	font-size:28px;
+	font-weight:bold;
+	}
+	
+	.map{
+	background:url('cabbage-town.png') no-repeat;
+	
+}
+	.text{
+	font-family:sans-serif, arial, helvetica;
+	font-size:28px;
+	font-weight:normal;
+	color:#666666;
+	
+	}
+	.cell{
+	font-family:sans-serif, arial, helvetica;
+	
+	float:left;
+	
+	vertical-align:middle;
+	}
+	#atlanta{
+	font-size:48px;
+	font-weight:bold;
+	
+	}
+	#cabbagetown{
+	font-size:48px;
+	font-weight:bold;
+	
+	}
+	
+	
+	.subtext
+	{
+	position:relative;
+	top:-2px;
 	font-size:14px;
-	z-index:0;
+	font-weight:normal;
+	font-style:italics;
+	color:#999999;
+	}
+	.header
+	{
+	font-size:30px;
+	color:#fff;
+	margin-bottom:30px;
+	background:#82D694;
+	padding:5px;
 	}
 	
-	#railyard
-	{
-	position: relative; 
-	top:40px; 
-	left:170px;
+	.bar{
+	width:60px;
+	height:10px;
+	display:block
+	text-align:top;
+	position:relative;
+	top:10px;
 	}
 	
-	#boulevard
-	{
-	position: relative; 
-	top:210px; 
-	left:120px;
-	}
-	#community
-	{
-	position: relative; 
-	top:98px; 
-	left:310px;
-	}
