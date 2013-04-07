@@ -19,6 +19,13 @@ body {
 	color: #FFFFFF;
 	text-shadow:none;
 }
+.map{
+	background:url('../images/cabbagetown.png') no-repeat;
+}
+.page-divider{
+	background-color:#7BC043;
+	height:6px;
+}
 /*Responsive CSS Mods*/
 @media (max-width: 979px) {
 	.navbar-fixed-top,

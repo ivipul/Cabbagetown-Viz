@@ -1,5 +1,51 @@
 $(document).ready(function(){
+				
+				/*code for the map of Cabbagetown*/
+	$('.tooltip').tooltipster({
+		animation: 'grow',
+		content: 'Loading...',
+		functionBefore: function(origin, continueTooltip) {
+
+			// we'll make this function asynchronous and allow the tooltip to go ahead and show the loading notification while fetching our data
+			continueTooltip();
+
+			// next, we want to check if our data has already been cached
+			if (origin.data('ajax') !== 'cached') {
+				$.ajax({
+					type: 'POST',
+					url: 'value.php',
+					success: function(data) {
+				   // update our tooltip content with our returned data and cache it
+				   origin.tooltipster('update', data).data('ajax', 'cached');
+					}
+				});
+			}
+		}
+	});
+		
+   	$('.readings').each( function(){
+    	var $this = $( this ),
+        classToAdd = null;
+
+    	switch( true )
+    	{
+        	case ( $this.text() ) <= 30:
+            classToAdd = 'blue';
+            break;
+
+        	case ( $this.text() ) > 30:
+            classToAdd = 'red';
+            break;
+
+    	}
+
+    	if( classToAdd !== null )
+    	{
+        $this.addClass( classToAdd );
+    	}
+	});
 	
+	/*code for the 2nd part of the page starts*/
 	var currLocation = 'Community Center';
 	var currDuration = 'day';
 	getReadings(currLocation, currDuration);	
@@ -39,6 +85,39 @@ $(document).ready(function(){
 	});
 });
 
+function getLatestReadings(){
+	$.ajax({
+    type: 'POST',
+    url: "value.php",
+    dataType:"json",
+    async: false
+
+    }).done(function(data) 
+    { 
+	$("#railyard").html(neighbourhood[0].data[0].reading);
+	data[0].location 
+	$("#boulevard").html(neighbourhood[1].data[0].reading);
+	data[0].location 
+	$("#community").html(neighbourhood[2].data[0].reading);
+	data[0].location
+	}
+	);
+}
+
+function getLatestAtlantaReading(){
+	$.ajax({
+    type: 'POST',
+    url: "value.php",
+    dataType:"json",
+    async: false
+
+    }).done(function(data) 
+    { 
+	$("#atlanta").html(atlanta[0].data[0].reading);
+	data[0].location
+	}
+	);
+}
 
 function getReadings(location, duration){
 	var JSONData = {};
