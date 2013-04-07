@@ -12,6 +12,13 @@ body {
 	float:none;
 	font-size:18px;
 }
+.navbar-inner {
+	background-image: linear-gradient(to bottom, #93D65C, #7BC043)
+}
+.navbar .brand {
+	color: #FFFFFF;
+	text-shadow:none;
+}
 /*Responsive CSS Mods*/
 @media (max-width: 979px) {
 	.navbar-fixed-top,

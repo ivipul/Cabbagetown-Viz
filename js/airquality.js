@@ -1,6 +1,46 @@
+$(document).ready(function(){
+	
+	var currLocation = 'Community Center';
+	var currDuration = 'day';
+	getReadings(currLocation, currDuration);	
+
+	$(".duration").bind('click', function(){
+		$(".duration").each(function() {
+			$(this).removeClass("active");
+		});
+		$(this).addClass("active");
+		if(this.id == "duration-day"){
+			currDuration = "day";
+		}
+		else if(this.id == "duration-week"){
+			currDuration = "week";
+		}
+		else if(this.id == "duration-month"){
+			currDuration = "month";
+		}
+		getReadings(currLocation, currDuration);
+	});
+	
+	$(".location").bind('click', function(){
+		$(".location").each(function() {
+			$(this).removeClass("active");
+		});
+		$(this).addClass("active");
+		if(this.id == "location1"){
+			currLocation = "Community Center";
+		}
+		else if(this.id == "location2"){
+			currLocation = "Boulevard & Carol St";
+		}
+		else if(this.id == "location3"){
+			currLocation = "Railyard";
+		}
+		getReadings(currLocation, currDuration);
+	});
+});
+
 
 function getReadings(location, duration){
-
 	var JSONData = {};
 	$.ajax({
     type: 'POST',
@@ -9,9 +49,9 @@ function getReadings(location, duration){
     dataType:"json",
     async: false
   }).done(function(data) {
-	console.log(data);
 	JSONData = data;
   });
+  
   if(duration == "day"){
 	JSONData.smallStandardVal = [35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35];
 	JSONData.bigStandardVal = [150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150];
@@ -38,7 +78,10 @@ function createChart(allData, location, duration){
 	var largeParticleTitle = 'PM10 Readings for '+duration+' at the '+location;
 	var smallOptions = {
 		title: {
-			text: smallParticleTitle
+			text: smallParticleTitle,
+			style: {
+				"font-weight": "bold"
+			}
 		},
 		xAxis: {
 			categories: allData.xAxisScale
@@ -52,7 +95,10 @@ function createChart(allData, location, duration){
 	};
 	var bigOptions = {
 		title: {
-			text: largeParticleTitle
+			text: largeParticleTitle,
+			style: {
+				"font-weight": "bold"
+			}
 		},
 		xAxis: {
 			categories: allData.xAxisScale
@@ -154,9 +200,3 @@ function createChart(allData, location, duration){
 	var smallChart = $('#small-pm-chart').highcharts(smallOptions);
 	var bigChart = $('#big-pm-chart').highcharts(bigOptions);	
 }
-$(document).ready(function(){
-	
-	var currLocation = 'Community Center';
-	var currDuration = 'day';
-	getReadings(currLocation, currDuration);	
-});
