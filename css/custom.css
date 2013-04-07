@@ -1,0 +1,27 @@
+/*Standard CSS Mods*/
+body {
+	margin-top: 42px;
+}
+.content-holder {
+	box-shadow: 0 10px 12px 6px rgba(0, 0, 0, 0.11);
+	min-height: 800px;
+	padding: 20px 25px 28px;
+}
+.navbar .brand {
+	margin:0;
+	float:none;
+	font-size:18px;
+}
+/*Responsive CSS Mods*/
+@media (max-width: 979px) {
+	.navbar-fixed-top,
+	.navbar-fixed-bottom {
+		position: absolute;
+  }
+}
+@media (max-width: 767px) {
+	.navbar-fixed-top{
+		margin-right: 0;
+		margin-left: 0;
+	}
+}

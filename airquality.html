@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Cabbagetown Air Quality </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <!-- Le styles -->
+        <link href="css/bootstrap.css" rel="stylesheet">
+        <link href="css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container" style="text-align: center">
+					<p class="brand">Cabbagetown Air Quality Status</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="content-holder">
+						<div id="location-selector" style="text-align:center;">
+						    <div class="btn-group">
+								<button class="btn active" onClick="getDayReadings(currLocation)">Community Center</button>
+								<button class="btn">Boulevard & Carol St</button>
+								<button class="btn">Railyard</button>
+							</div>
+						</div>
+						<br/>
+						<div id="location-selector" style="text-align:right;">
+						    <div class="btn-group">
+								<button class="btn active">Today</button>
+								<button class="btn">This Week</button>
+								<button class="btn">This Month</button>
+							</div>
+						</div>
+						<div id="small-pm-chart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+						<div id="big-pm-chart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+		<script src="js/highcharts.js"></script>
+		<script src="js/airquality.js"></script>
+    </body>
+</html>

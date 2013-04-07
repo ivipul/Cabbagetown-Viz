@@ -1,0 +1,14 @@
+[
+    {
+        "location": "Community Center",
+        "reading": "30",
+    },
+    {
+        "location": "Boulevard & Carol St",
+        "reading": "30",
+    },
+    {
+        "location": "Railyard",
+        "reading": "30",
+    }
+]
