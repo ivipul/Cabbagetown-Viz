@@ -1,14 +1,27 @@
 [
     {
         "location": "Community Center",
-        "reading": "30",
+        "smallParticle": "30",
+        "bigParticle": "130",
     },
     {
         "location": "Boulevard & Carol St",
-        "reading": "30",
+        "smallParticle": "30",
+        "bigParticle": "130",
     },
     {
         "location": "Railyard",
-        "reading": "30",
+        "smallParticle": "30",
+        "bigParticle": "130",
+    },
+    {
+        "location": "Railyard",
+        "smallParticle": "30",
+        "bigParticle": "130",
+    },
+    {
+        "location": "Atlanta",
+        "smallParticle": "30",
+        "bigParticle": "130",
     }
 ]
