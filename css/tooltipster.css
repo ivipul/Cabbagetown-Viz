@@ -291,6 +291,15 @@ html {
 
 /*VIZ CSS*/
  
+ .readings{
+	font-family:sans-serif, arial, helvetica;
+	color: #fff;
+	 background-color: #82D694;
+ }
+ 
+  .numeric-value{
+	color:#82D694;
+  }
  .green{
  background-color: #82D694;
     font-family:sans-serif, arial, helvetica;
@@ -311,28 +320,27 @@ color: #82D694;
 	.red-value {
 	color: #FC858D;
 	}
-	.tooltip
+.tooltip
 	{
 	width:40px; 
 	height:40px; 
 	display:block; 
 	border-radius:20px; 
 	text-align:center;
-	vertical-align:middle;
-	font-size:28px;
-	font-weight:bold;
+	opacity: 1;
+	font-size:14px;
+	z-index:0;
 	}
-	
+
 	.map{
 	background:url('cabbage-town.png') no-repeat;
-	
 }
 	.text{
 	font-family:sans-serif, arial, helvetica;
 	font-size:28px;
 	font-weight:normal;
 	color:#666666;
-	
+	padding-bottom: 30px;
 	}
 	.cell{
 	font-family:sans-serif, arial, helvetica;
@@ -361,6 +369,7 @@ color: #82D694;
 	font-weight:normal;
 	font-style:italics;
 	color:#999999;
+	padding-left: 10px;
 	}
 	.header
 	{

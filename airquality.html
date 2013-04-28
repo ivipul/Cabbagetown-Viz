@@ -22,54 +22,48 @@
         </div>
         <div class="container content-holder">
             <div class="row-fluid">
-            			<div class="header text">Air Quality Sensing</div>
 				<div class="map" style="display:block; width:600px; height:450px; float:left; ">
-					<span id="railyard" class="readings tooltip" title="Railyard" style="position: relative; top:40px; left:170px;">30</span>
+					<span id="railyard" class="readings tooltip" title="Railyard" style="position: relative; top:70px; left:170px; line-height: 35px; font-weight: bold; display: none;"></span>
    		
-   					<span id="boulevard" class="readings tooltip" title="Boulevard & Carol Street" style="position: relative; top:210px; left:120px;">50</span>
+   					<span id="boulevard" class="readings tooltip" title="Boulevard & Carol Street" style="position: relative; top:240px; left:120px; line-height: 35px; font-weight: bold;  display: none;"></span>
    		
-   					<span id="community" class="readings tooltip" title="Community Center" style="position: relative; top:98px; left:310px;">30</span>
+   					<span id="community" class="readings tooltip" title="Community Center" style="position: relative; top:138px; left:310px; line-height: 35px; font-weight: bold; display: none;"></span>
 				</div>
 				
 				
-				<div style="display:block; width:300px; height:450px; float:left; ">
+				<div style="display:block; width:430px; height:450px; float:left; ">
 					<div class="text" >Atlanta</div>
 					<div>
 						<div id="atlanta" class="cell numeric-value" style="float:left;">16</div>
 						<div class="cell" style="float:left;">
-							<div class="readings numeric-value"></div><br/>
-							<div class="subtext">(in Ug/m<sup>3</sup>  average reading at 7pm)</div>
+							<div class="subtext">(in Ug/m<sup>3</sup>  average reading as of <span id="atlanta-current-time">now</span>)</div>
 						</div>
 					</div>
 					<div style="clear:both"</div><br/>
 					<div class="text" >Cabbagetown</div>
 					<div>
-						<div id="cabbagetown" class="cell numeric-value" style="float:left;">43</div>
+						<div id="cabbagetown" class="cell numeric-value" style="float:left;"></div>
 						<div class="cell" style="float:left;">
-							<div class="readings numeric-value"></div><br/>
-							<div class="subtext">(in Ug/m<sup>3</sup> average reading at 7pm)</div>
+							<div class="subtext">(in Ug/m<sup>3</sup> average reading on  <span id="cabbagetown-current-time">now</span>)</div>
 						</div>
 					</div>
 				</div>
 				
-				 <div class="btn-group" style="display:block; width:600px; height:600px; float:left; ">
-								<button class="btn active" onClick="getPMvalues(pmValue)">PM2.5</button>
-								<button class="btn">PM10</button>
+				 <div class="btn-group" style="display:block; width:600px; height:600px; float:left; padding-top:30px; ">
+								<button class="btn active toggleRange" id="pm25switch" onClick="getLatestReadings('small')">PM2.5</button>
+								<button class="btn toggleRange" id="pm10switch" onClick="getLatestReadings('large')">PM10</button>
 								
 				</div>
 	
 				
-				
-				
-				<hr class="page-divider"/>
 			</div>
             <div class="row-fluid">
                 <div class="span12">
                     <div class="">
 						<div id="location-selector" style="text-align:center;">
 						    <div class="btn-group">
-								<button class="btn active location" id="location1">Community Center</button>
-								<button class="btn location" id="location2">Boulevard & Carol St</button>
+								<button class="btn location" id="location1">Community Center</button>
+								<button class="btn active location" id="location2">Boulevard & Carol St</button>
 								<button class="btn location" id="location3">Railyard</button>
 							</div>
 						</div>
@@ -97,3 +91,5 @@
 		<script src="js/airquality.js"></script>
     </body>
 </html>
+
+

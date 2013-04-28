@@ -1,85 +1,12 @@
 $(document).ready(function(){
 				
-				/*code for the map of Cabbagetown*/
-	$('.tooltip').tooltipster({
-		animation: 'grow',
-		content: 'Loading...',
-		functionBefore: function(origin, continueTooltip) {
-
-			// we'll make this function asynchronous and allow the tooltip to go ahead and show the loading notification while fetching our data
-			continueTooltip();
-
-			// next, we want to check if our data has already been cached
-			if (origin.data('ajax') !== 'cached') {
-				$.ajax({
-					type: 'POST',
-					url: 'value.php',
-					success: function(data) {
-				   // update our tooltip content with our returned data and cache it
-				   origin.tooltipster('update', data).data('ajax', 'cached');
-					}
-				});
-			}
-		}
-	});
-		
-   	$('.readings').each( function(){
-    	var $this = $( this ),
-        classToAdd = null;
-
-    	switch( true )
-    	{
-        	case ( $this.text() ) <= 30:
-            classToAdd = 'blue';
-            break;
-
-        	case ( $this.text() ) > 30:
-            classToAdd = 'red';
-            break;
-
-    	}
-
-    	if( classToAdd !== null )
-    	{
-        $this.addClass( classToAdd );
-    	}
-	});
-	
-	
-	
-	$('.numeric-value').each( function()
-		{
-    	var $this = $( this ),
-        classToAdd = null;
-
-    	switch( true )
-    	{
-        	case ( $this.text() ) <= 30:
-            classToAdd = 'green-value';
-            break;
-
-        	case ( $this.text() ) > 30:
-            classToAdd = 'red-value';
-            break;
-
-    	}
-
-    	if( classToAdd !== null )
-    	{
-        $this.addClass( classToAdd );
-    	}
-	});
-		
-	
-	
-	
-	
 	
 	/*code for the 2nd part of the page starts*/
-	var currLocation = 'Community Center';
+	var currLocation = '2';
 	var currDuration = 'day';
 	getReadings(currLocation, currDuration);	
-
+	getLatestReadings("small");
+	
 	$(".duration").bind('click', function(){
 		$(".duration").each(function() {
 			$(this).removeClass("active");
@@ -103,50 +30,65 @@ $(document).ready(function(){
 		});
 		$(this).addClass("active");
 		if(this.id == "location1"){
-			currLocation = "Community Center";
+			currLocation = "1";
 		}
 		else if(this.id == "location2"){
-			currLocation = "Boulevard & Carol St";
+			currLocation = "2";
 		}
 		else if(this.id == "location3"){
-			currLocation = "Railyard";
+			currLocation = "3";
 		}
 		getReadings(currLocation, currDuration);
 	});
 });
 
-function getLatestReadings(){
+function getLatestReadings(particleSize){
+	var readingSum = 0;
 	$.ajax({
     type: 'POST',
-    url: "value.php",
+    url: "response.php",
+    data: {action: "getLatestReadings", particleSize: particleSize},
     dataType:"json",
-    async: false
-
+	async : false
     }).done(function(data) 
-    { 
-	$("#railyard").html(neighbourhood[0].data[0].reading);
-	data[0].location 
-	$("#boulevard").html(neighbourhood[1].data[0].reading);
-	data[0].location 
-	$("#community").html(neighbourhood[2].data[0].reading);
-	data[0].location
-	}
-	);
-}
+		{
+		console.log(data);
+		$('.readings').css("background-color", "#82D694");
+		$('.numeric-value').css("color", "#82D694");
+		if (typeof data.neighborhoodJSON.readings["1"] !== "undefined"){
+			console.log("1");
+			$("#community").show().html(data.neighborhoodJSON.readings["1"]);
+			readingSum += parseInt(data.neighborhoodJSON.readings["1"]);
+		}
+		if (typeof data.neighborhoodJSON.readings["2"] !== "undefined"){
+			console.log("2");
+			$("#boulevard").show().html(data.neighborhoodJSON.readings["2"]);
+			readingSum += parseInt(data.neighborhoodJSON.readings["2"]);
+		}
+		if (typeof data.neighborhoodJSON.readings["3"] !== "undefined"){
+			console.log("3");
+			$("#railyard").show().html(data.neighborhoodJSON.readings["3"]);
+			readingSum += parseInt(data.neighborhoodJSON.readings["3"]);
+		}
+	
+		$("#cabbagetown").html(readingSum / Object.keys(data.neighborhoodJSON.readings).length );
 
-function getLatestAtlantaReading(){
-	$.ajax({
-    type: 'POST',
-    url: "value.php",
-    dataType:"json",
-    async: false
-
-    }).done(function(data) 
-    { 
-	$("#atlanta").html(atlanta[0].data[0].reading);
-	data[0].location
-	}
+		$( ".readings" ).each(function( index ) {
+			if ((parseInt($(this).html()) >=35 && particleSize == "small") || (parseInt($(this).html()) >=150 && particleSize == "large"))
+				$(this).css("background-color", "#FC858D");
+		});
+		$( ".numeric-value" ).each(function( index ) {
+			if ((parseInt($(this).html()) >=35 && particleSize == "small") || (parseInt($(this).html()) >=150 && particleSize == "large"))
+				$(this).css("color", "#FC858D");
+		});
+		$("#cabbagetown-current-time").html(data.neighborhoodJSON.time+":00 on "+data.neighborhoodJSON.date);
+		}
 	);
+	$(".toggleRange").removeClass("active");
+	if(particleSize == "small")
+		$("#pm25switch").addClass("active");
+	else
+		$("#pm10switch").addClass("active");
 }
 
 function getReadings(location, duration){
@@ -154,7 +96,7 @@ function getReadings(location, duration){
 	$.ajax({
     type: 'POST',
     url: "response.php",
-    data: {location: location, duration: duration},
+    data: {action: "getNeighborhoodReading", location: location, duration: duration},
     dataType:"json",
     async: false
   }).done(function(data) {
@@ -170,7 +112,7 @@ function getReadings(location, duration){
   else if (duration == "week"){
 	JSONData.smallStandardVal = [35,35,35,35,35,35,35];
 	JSONData.bigStandardVal = [150,150,150,150,150,150,150];
-	JSONData.xAxisScale = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; 
+	JSONData.xAxisScale = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; 
 	createChart(JSONData, location, "This Week");
   }
   else if (duration == "month"){
@@ -183,8 +125,21 @@ function getReadings(location, duration){
 }
 
 function createChart(allData, location, duration){
-	var smallParticleTitle = 'PM2.5 Readings for '+duration+' at the '+location;
-	var largeParticleTitle = 'PM10 Readings for '+duration+' at the '+location;
+	var locationName;
+	switch(location)
+	{
+	case "1":
+	  locationName = "Community Center";
+	  break;
+	case "2":
+	  locationName = "Boulevard & Carol St";
+	  break;
+	case "3":
+	  locationName = "Railyard";
+	  break;
+	}
+	var smallParticleTitle = 'PM2.5 Readings for '+duration+' at the '+locationName;
+	var largeParticleTitle = 'PM10 Readings for '+duration+' at the '+locationName;
 	var smallOptions = {
 		title: {
 			text: smallParticleTitle,
@@ -222,7 +177,7 @@ function createChart(allData, location, duration){
 
 	var neighborhoodSmallSeries = {
 		type: 'column',
-		name: allData.neighborhoodJSON.location,
+		name: locationName,
 		data: []
 	};
 	$.each(allData.neighborhoodJSON.smallParticle, function(readingNo, reading) {
@@ -265,7 +220,7 @@ function createChart(allData, location, duration){
 
 	var neighborhoodBigSeries = {
 		type: 'column',
-		name: allData.neighborhoodJSON.location,
+		name: locationName,
 		data: []
 	};
 	$.each(allData.neighborhoodJSON.bigParticle, function(readingNo, reading) {
