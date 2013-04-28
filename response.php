@@ -1,4 +1,8 @@
 <?php
+// Time Zone Code
+define('TIMEZONE', 'America/New_York');
+date_default_timezone_set(TIMEZONE);
+//----------------------
 header('Content-Type: application/json');
 
 	//Please add the host, username and password for your server
@@ -20,6 +24,8 @@ function getLatestReadings($host, $username, $password, $database, $particleSize
 	mysql_connect($host, $username, $password)or die("cannot connect"); 
 	mysql_select_db($database)or die("cannot select DB");
 
+	mysql_query("SET time_zone='America/New_York';"); //Tell MySQL to offset the time it returns
+	
 	if ($particleSize == "small"){
 		$sql = "SELECT  AVG(new_data.small_particle_count) AS READING, new_data.TIME_UNIT AS TIME_UNIT, new_data.DATE_UNIT AS DATE_UNIT, new_data.sensorID AS LOCATION
 				FROM (
@@ -90,6 +96,8 @@ function getNeighborhoodReading($host, $username, $password, $database, $time_ra
 	mysql_connect($host, $username, $password)or die("cannot connect"); 
 	mysql_select_db($database)or die("cannot select DB");
 
+	mysql_query("SET time_zone='America/New_York';"); //Tell MySQL to offset the time it returns
+	
 	if ($time_range == "day"){
 		$sqlSmallParticle = " SELECT  AVG(new_data.small_particle_count) AS SMALL_PARTICLE, new_data.TIME_UNIT
 				FROM (
