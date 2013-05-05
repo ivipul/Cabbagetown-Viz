@@ -5,7 +5,7 @@ date_default_timezone_set(TIMEZONE);
 //----------------------
 header('Content-Type: application/json');
 
-	//Please add the host, username and password for your server
+	//please add details of your database hosting
 	$host = "";
 	$username="";
 	$password="";
@@ -29,13 +29,18 @@ function getLatestReadings($host, $username, $password, $database, $particleSize
 	if ($particleSize == "small"){
 		$sql = "SELECT  AVG(new_data.small_particle_count) AS READING, new_data.TIME_UNIT AS TIME_UNIT, new_data.DATE_UNIT AS DATE_UNIT, new_data.sensorID AS LOCATION
 				FROM (
-					SELECT AVG( small_particle_count ) -2 * STDDEV( small_particle_count ) AS MIN_RANGE, AVG( small_particle_count ) +2 * STDDEV( small_particle_count ) AS MAX_RANGE, HOUR(MAX( timestamp )) AS TIME_UNIT, DATE_FORMAT(DATE(MAX( timestamp )), '%e %b, %Y') AS DATE_UNIT
+					SELECT AVG( small_particle_count ) -2 * STDDEV( small_particle_count ) AS MIN_RANGE, AVG( small_particle_count ) +2 * STDDEV( small_particle_count ) AS MAX_RANGE, HOUR(MAX( timestamp )) AS TIME_UNIT, DATE_FORMAT(DATE(MAX( timestamp )), '%e %b, %Y') AS DATE_UNIT,  sensorID
 					FROM data_raw
 					WHERE HOUR( timestamp ) = (SELECT HOUR(MAX( timestamp )) - 1 FROM data_raw )
-					GROUP BY HOUR( timestamp )
-				) AS TEMP_TABLE, (select small_particle_count, HOUR(MAX( timestamp )) AS TIME_UNIT, DATE_FORMAT(DATE(MAX( timestamp )), '%e %b, %Y') AS DATE_UNIT, sensorID 
+					GROUP BY HOUR( timestamp ), sensorID
+					) AS TEMP_TABLE, (SELECT small_particle_count, HOUR( timestamp ) AS TIME_UNIT, DATE_FORMAT( DATE( timestamp ) , '%e %b, %Y' ) AS DATE_UNIT, sensorID
 					FROM data_raw
-					WHERE HOUR( timestamp ) = (SELECT HOUR(MAX( timestamp )) - 1 FROM data_raw )
+					WHERE HOUR( timestamp ) = (
+					SELECT HOUR( MAX( timestamp ) ) -1
+					FROM data_raw ) 
+					AND DATE( timestamp ) = (
+					SELECT DATE( MAX( timestamp ) )
+					FROM data_raw ) 
 				) as new_data
 				WHERE new_data.TIME_UNIT= TEMP_TABLE.TIME_UNIT
 				and new_data.small_particle_count
@@ -45,13 +50,18 @@ function getLatestReadings($host, $username, $password, $database, $particleSize
 	else if ($particleSize == "large"){
 		$sql = "SELECT  AVG(new_data.large_particle_count) AS READING, new_data.TIME_UNIT AS TIME_UNIT, new_data.DATE_UNIT AS DATE_UNIT, new_data.sensorID AS LOCATION
 				FROM (
-					SELECT AVG( large_particle_count ) -2 * STDDEV( large_particle_count ) AS MIN_RANGE, AVG( large_particle_count ) +2 * STDDEV( large_particle_count ) AS MAX_RANGE, HOUR(MAX( timestamp )) AS TIME_UNIT, DATE_FORMAT(DATE(MAX( timestamp )), '%e %b, %Y') AS DATE_UNIT
+					SELECT AVG( large_particle_count ) -2 * STDDEV( large_particle_count ) AS MIN_RANGE, AVG( large_particle_count ) +2 * STDDEV( large_particle_count ) AS MAX_RANGE, HOUR(MAX( timestamp )) AS TIME_UNIT, DATE_FORMAT(DATE(MAX( timestamp )), '%e %b, %Y') AS DATE_UNIT,  sensorID
 					FROM data_raw
 					WHERE HOUR( timestamp ) = (SELECT HOUR(MAX( timestamp )) - 1 FROM data_raw )
-					GROUP BY HOUR( timestamp )
-				) AS TEMP_TABLE, (select large_particle_count, HOUR(MAX( timestamp )) AS TIME_UNIT, DATE_FORMAT(DATE(MAX( timestamp )), '%e %b, %Y') AS DATE_UNIT, sensorID 
+					GROUP BY HOUR( timestamp ), sensorID
+					) AS TEMP_TABLE, (SELECT large_particle_count, HOUR( timestamp ) AS TIME_UNIT, DATE_FORMAT( DATE( timestamp ) , '%e %b, %Y' ) AS DATE_UNIT, sensorID
 					FROM data_raw
-					WHERE HOUR( timestamp ) = (SELECT HOUR(MAX( timestamp )) - 1 FROM data_raw )
+					WHERE HOUR( timestamp ) = (
+					SELECT HOUR( MAX( timestamp ) ) -1
+					FROM data_raw ) 
+					AND DATE( timestamp ) = (
+					SELECT DATE( MAX( timestamp ) )
+					FROM data_raw ) 
 				) as new_data
 				WHERE new_data.TIME_UNIT= TEMP_TABLE.TIME_UNIT
 				and new_data.large_particle_count
@@ -243,7 +253,6 @@ function getNeighborhoodReading($host, $username, $password, $database, $time_ra
 	$largeParticleArray[$row['TIME_UNIT']] = $row['LARGE_PARTICLE'];
 	}
 	
-	
 	$m25 = 5.89*pow(10,-7);
 	$m10 = 1.21*pow(10,-4);
 
@@ -269,10 +278,6 @@ function getNeighborhoodReading($host, $username, $password, $database, $time_ra
 			 "location" => $_POST['location'],
 			"smallParticle" => $smallParticleArray,
 			"bigParticle" => $largeParticleArray
-		),
-		"atlantaJSON" => array(
-			"smallParticle" => $atlantaSmallParticleArray,
-			"bigParticle" => $atlantaBigParticleArray
 		)
 	);
 	echo json_encode($return_array);

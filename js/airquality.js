@@ -1,9 +1,9 @@
 $(document).ready(function(){
 				
-	
-	/*code for the 2nd part of the page starts*/
-	var currLocation = '2';
+	//default tab to show
+	var currLocation = '1';
 	var currDuration = 'day';
+
 	getReadings(currLocation, currDuration);	
 	getLatestReadings("small");
 	
@@ -56,18 +56,15 @@ function getLatestReadings(particleSize){
 		$('.readings').css("background-color", "#82D694");
 		$('.numeric-value').css("color", "#82D694");
 		if (typeof data.neighborhoodJSON.readings["1"] !== "undefined"){
-			console.log("1");
-			$("#community").show().html(data.neighborhoodJSON.readings["1"]);
+			$("#community").css('visibility', 'visible').html(data.neighborhoodJSON.readings["1"]);
 			readingSum += parseInt(data.neighborhoodJSON.readings["1"]);
 		}
 		if (typeof data.neighborhoodJSON.readings["2"] !== "undefined"){
-			console.log("2");
-			$("#boulevard").show().html(data.neighborhoodJSON.readings["2"]);
+			$("#boulevard").css('visibility', 'visible').html(data.neighborhoodJSON.readings["2"]);
 			readingSum += parseInt(data.neighborhoodJSON.readings["2"]);
 		}
 		if (typeof data.neighborhoodJSON.readings["3"] !== "undefined"){
-			console.log("3");
-			$("#railyard").show().html(data.neighborhoodJSON.readings["3"]);
+			$("#railyard").css('visibility', 'visible').html(data.neighborhoodJSON.readings["3"]);
 			readingSum += parseInt(data.neighborhoodJSON.readings["3"]);
 		}
 	
@@ -104,26 +101,60 @@ function getReadings(location, duration){
   });
   
   if(duration == "day"){
-	JSONData.smallStandardVal = [35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35];
-	JSONData.bigStandardVal = [150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150];
+	JSONData.atlantaJSON = {};
+	JSONData.atlantaJSON.smallParticle = [].repeat(0, 24);
+	JSONData.atlantaJSON.bigParticle = [].repeat(0, 24);
+	
+	/*var smallParticleArray = JSONData.atlantaJSON.smallParticle;
+	$.ajax({
+		type: 'GET',
+		url: "proxy.php",
+		dataType:"json",
+		async: false
+	  }).done(function(data) {
+			$.each( data.pm25Mid24hrAQI, function( key, value ) {
+				//console.log(value);
+				smallParticleArray[key] = parseFloat(value.PM25Mid24HrUgM3);
+			});
+			console.log(smallParticleArray);
+			smallParticleArray.push(smallParticleArray[0]);
+			smallParticleArray.shift(smallParticleArray[0]);
+			console.log(smallParticleArray);
+	});*/
+	
+
+	JSONData.smallStandardVal = [].repeat(35, 24);
+	JSONData.bigStandardVal = [].repeat(150, 24);
+
 	JSONData.xAxisScale = ['1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm', '11pm', '12am'];  
 	createChart(JSONData, location, "Today");
   }
   else if (duration == "week"){
-	JSONData.smallStandardVal = [35,35,35,35,35,35,35];
-	JSONData.bigStandardVal = [150,150,150,150,150,150,150];
+	JSONData.atlantaJSON = {};
+	JSONData.atlantaJSON.smallParticle = [].repeat(0, 7);
+	JSONData.atlantaJSON.bigParticle = [].repeat(0, 7);
+	
+	JSONData.smallStandardVal = [].repeat(35, 7);
+	JSONData.bigStandardVal = [].repeat(150, 7);
+
 	JSONData.xAxisScale = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; 
 	createChart(JSONData, location, "This Week");
   }
   else if (duration == "month"){
-	JSONData.smallStandardVal = [35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35];
-	JSONData.bigStandardVal = [150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150];
-	JSONData.xAxisScale = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];  
+	JSONData.atlantaJSON = {};
+	JSONData.atlantaJSON.smallParticle = [].repeat(0, 31);
+	JSONData.atlantaJSON.bigParticle = [].repeat(0, 31);
+  
+	JSONData.smallStandardVal = [].repeat(35, 31);
+	JSONData.bigStandardVal = [].repeat(150, 31);
+  
+	JSONData.xAxisScale = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']; 
+	console.log(JSONData);
 	createChart(JSONData, location, "This Month");
   }
   
 }
-
+  
 function createChart(allData, location, duration){
 	var locationName;
 	switch(location)
@@ -236,18 +267,7 @@ function createChart(allData, location, duration){
 		neighborhoodBigSeries.data.push(data);
 	});
 	bigOptions.series.push(neighborhoodBigSeries);
-	
-	var atlantaBigSeries = {
-		type: 'spline',
-		name: 'Atlanta Readings',
-		data: allData.atlantaJSON.bigParticle,
-		marker: {
-			lineWidth: 1,
-			lineColor: '#8894c5',
-			fillColor: 'white'
-		}
-	}; 
-	bigOptions.series.push(atlantaBigSeries);
+
 
 	var standardBigSeries = {
 		type: 'spline',
@@ -263,4 +283,12 @@ function createChart(allData, location, duration){
 	
 	var smallChart = $('#small-pm-chart').highcharts(smallOptions);
 	var bigChart = $('#big-pm-chart').highcharts(bigOptions);	
+}
+
+//helper functions
+
+//To create an array of size (size) with default values (value) Call:var A= [].repeat(0, 24);
+Array.prototype.repeat= function(value, size){
+ while(size) this[--size]= value;
+ return this;
 }
