@@ -36,3 +36,13 @@ CREATE TABLE IF NOT EXISTS `data_raw` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `atlanta_data_raw`
+--
+
+CREATE TABLE IF NOT EXISTS `atlanta_data_raw` (
+  `small_particle_count` float DEFAULT NULL,
+  `large_particle_count` float DEFAULT NULL,
+  `timestamp` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
