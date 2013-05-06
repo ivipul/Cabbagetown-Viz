@@ -1,14 +1,14 @@
 <?php
 	// Time Zone Code
 	define('TIMEZONE', 'America/New_York');
-	date_default_timezone_set(TIMEZONE);
-	
+	date_default_timezone_set(TIMEZONE);	
 	// Set your return content type
 	header('Content-type: application/json');
 	
-	$host = "localhost";
-	$username="root";
-	$password="password";
+	//please add details of your database hosting
+	$host = "";
+	$username="";
+	$password="";
 	$database="ubicomp2013";
 		
 	// Website url to open
