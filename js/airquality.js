@@ -148,8 +148,8 @@ function createChart(allData, location, duration){
 	  locationName = "Railyard";
 	  break;
 	}
-	var smallParticleTitle = 'PM2.5 Readings for '+duration+' at the '+locationName;
-	var largeParticleTitle = 'PM10 Readings for '+duration+' at the '+locationName;
+	var smallParticleTitle = 'PM₂₅ Readings for '+duration+' at the '+locationName;
+	var largeParticleTitle = 'PM₁₀ Readings for '+duration+' at the '+locationName;
 	var smallOptions = {
 		title: {
 			text: smallParticleTitle,
