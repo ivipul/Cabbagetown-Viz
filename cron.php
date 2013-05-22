@@ -16,7 +16,7 @@
 	$_GET["airscode"] = "131210055";
 	$_GET["key"] = "FF632A46-BC2C-4B1E-BC47-89F3EDFCBB87";
 	$_GET["format"] = "json";
-	$_GET["date"] = date('Y-m-d', time() - 60 * 60 * 24);
+	$_GET["date"] = date('Y-m-d', time() ); //
 
 	$querystring = '?';
 	foreach($_GET as $k=>$v) {
@@ -48,23 +48,30 @@
 		$log = new Logging();
 		// set path and name of log file (optional)
 		$log->lfile('atlantaReadingsLog.txt');
+	
 		
-		foreach( $root['pm25Mid24hrAQI'] as $pm25Mid24hrAQI ) {
+		if ($root['pm25Mid24hrAQI'] != ""){
+			foreach( $root['pm25Mid24hrAQI'] as $pm25Mid24hrAQI ) {
 				$dateTime = datetime::createfromformat('d-F-Y H',$pm25Mid24hrAQI[DateTimeGMT]);
 				$dateTime = $dateTime->format('Y-m-d H:i:s');
+				$dateTime = strtotime($dateTime . ' -4 hours');
+				$dateTime = date('Y-m-d H:i:s', $dateTime);
+				echo $dateTime."\n";
+				
 				$sql="INSERT INTO atlanta_data_raw(small_particle_count,large_particle_count, timestamp)VALUES($pm25Mid24hrAQI[PM25Mid24HrUgM3], NULL, '$dateTime')";
 				$result=mysql_query($sql);
 				if ($result){
 					$successfulInserts++;
 					$log->lwrite($successfulInserts.": Successful entry for ".$dateTime);
 				}
-				else{
-					$log->lwrite('Failed to write to database');
-				}
+			}		
 		}
+
 		echo $successfulInserts;
 		mysql_close();
-				 
+		if ($successfulInserts == 0){
+			$log->lwrite("No new data was available");
+		}
 		// close log file
 		$log->lclose();
 	}

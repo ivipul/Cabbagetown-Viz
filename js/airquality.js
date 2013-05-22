@@ -52,7 +52,6 @@ function getLatestReadings(particleSize){
 	async : false
     }).done(function(data) 
 		{
-		console.log(data);
 		$('.readings').css("background-color", "#82D694");
 		$('.numeric-value').css("color", "#82D694");
 		if (typeof data.neighborhoodJSON.readings["1"] !== "undefined"){
@@ -78,7 +77,18 @@ function getLatestReadings(particleSize){
 			if ((parseInt($(this).html()) >=35 && particleSize == "small") || (parseInt($(this).html()) >=150 && particleSize == "large"))
 				$(this).css("color", "#FC858D");
 		});
-		$("#cabbagetown-current-time").html(data.neighborhoodJSON.time+":00 on "+data.neighborhoodJSON.date);
+		$("#cabbagetown-current-time").html("at "+data.neighborhoodJSON.time+":00 on "+data.neighborhoodJSON.date);
+		
+		if (particleSize == "small"){
+			$("#atlanta").html(data.atlantaJSON.readings);
+			$("#atlanta-current-time").html("at "+data.atlantaJSON.time+":00 on "+data.atlantaJSON.date);
+		}
+		else{
+			$("#atlanta").html("NA");
+			$("#atlanta-current-time").html("");
+		}
+		
+
 		}
 	);
 	$(".toggleRange").removeClass("active");
@@ -101,39 +111,13 @@ function getReadings(location, duration){
   });
   
   if(duration == "day"){
-	JSONData.atlantaJSON = {};
-	JSONData.atlantaJSON.smallParticle = [].repeat(0, 24);
-	JSONData.atlantaJSON.bigParticle = [].repeat(0, 24);
-	
-	/*var smallParticleArray = JSONData.atlantaJSON.smallParticle;
-	$.ajax({
-		type: 'GET',
-		url: "proxy.php",
-		dataType:"json",
-		async: false
-	  }).done(function(data) {
-			$.each( data.pm25Mid24hrAQI, function( key, value ) {
-				//console.log(value);
-				smallParticleArray[key] = parseFloat(value.PM25Mid24HrUgM3);
-			});
-			console.log(smallParticleArray);
-			smallParticleArray.push(smallParticleArray[0]);
-			smallParticleArray.shift(smallParticleArray[0]);
-			console.log(smallParticleArray);
-	});*/
-	
-
 	JSONData.smallStandardVal = [].repeat(35, 24);
 	JSONData.bigStandardVal = [].repeat(150, 24);
 
-	JSONData.xAxisScale = ['1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm', '11pm', '12am'];  
+	JSONData.xAxisScale = ['12am', '1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm', '11pm'];  
 	createChart(JSONData, location, "Today");
   }
   else if (duration == "week"){
-	JSONData.atlantaJSON = {};
-	JSONData.atlantaJSON.smallParticle = [].repeat(0, 7);
-	JSONData.atlantaJSON.bigParticle = [].repeat(0, 7);
-	
 	JSONData.smallStandardVal = [].repeat(35, 7);
 	JSONData.bigStandardVal = [].repeat(150, 7);
 
@@ -141,15 +125,10 @@ function getReadings(location, duration){
 	createChart(JSONData, location, "This Week");
   }
   else if (duration == "month"){
-	JSONData.atlantaJSON = {};
-	JSONData.atlantaJSON.smallParticle = [].repeat(0, 31);
-	JSONData.atlantaJSON.bigParticle = [].repeat(0, 31);
-  
 	JSONData.smallStandardVal = [].repeat(35, 31);
 	JSONData.bigStandardVal = [].repeat(150, 31);
   
 	JSONData.xAxisScale = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']; 
-	console.log(JSONData);
 	createChart(JSONData, location, "This Month");
   }
   
@@ -209,6 +188,7 @@ function createChart(allData, location, duration){
 	var neighborhoodSmallSeries = {
 		type: 'column',
 		name: locationName,
+		color: '#82D694',
 		data: []
 	};
 	$.each(allData.neighborhoodJSON.smallParticle, function(readingNo, reading) {
@@ -224,11 +204,33 @@ function createChart(allData, location, duration){
 		neighborhoodSmallSeries.data.push(data);
 	});
 	smallOptions.series.push(neighborhoodSmallSeries);
-	
+
+	var standardSmallSeries = {
+		type: 'spline',
+		name: 'PM2.5 Standard Value',
+		data: allData.smallStandardVal,
+		color: '#2F7ED8',
+		marker: {
+			lineWidth: 1,
+			lineColor: '#4F8C1F',
+			fillColor: 'white'
+		}
+	}; 
+	smallOptions.series.push(standardSmallSeries);
+
+	console.log(allData.atlantaJSON.reading);
+	console.log(typeof allData.atlantaJSON.reading);
+	var atlantaArray = [];
+	for(var i in allData.atlantaJSON.reading){
+		if (typeof allData.atlantaJSON.reading[i] == "number")
+			atlantaArray.push(parseFloat(allData.atlantaJSON.reading[i]));
+	}
+	console.log(atlantaArray);
 	var atlantaSmallSeries = {
 		type: 'spline',
 		name: 'Atlanta Readings',
-		data: allData.atlantaJSON.smallParticle,
+		data: atlantaArray,
+		color: '#AAAAAA',
 		marker: {
 			lineWidth: 1,
 			lineColor: '#8894c5',
@@ -236,22 +238,11 @@ function createChart(allData, location, duration){
 		}
 	}; 
 	smallOptions.series.push(atlantaSmallSeries);
-
-	var standardSmallSeries = {
-		type: 'spline',
-		name: 'PM2.5 Standard Value',
-		data: allData.smallStandardVal,
-		marker: {
-			lineWidth: 1,
-			lineColor: '#4f8c1f',
-			fillColor: 'white'
-		}
-	}; 
-	smallOptions.series.push(standardSmallSeries);	
-
+	
 	var neighborhoodBigSeries = {
 		type: 'column',
 		name: locationName,
+		color: '#82D694',
 		data: []
 	};
 	$.each(allData.neighborhoodJSON.bigParticle, function(readingNo, reading) {
@@ -272,6 +263,7 @@ function createChart(allData, location, duration){
 	var standardBigSeries = {
 		type: 'spline',
 		name: 'PM10 Standard Value',
+		color: '#2F7ED8',
 		data: allData.bigStandardVal,
 		marker: {
 			lineWidth: 1,
